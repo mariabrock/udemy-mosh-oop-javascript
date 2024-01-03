@@ -317,3 +317,6 @@
 // circle.defaultLocation = 1;
 // // this gives us an error (on purpose), we want this property to be read only, not able to be changed
 // circle.draw();
+
+
+// _____________________________________INHERITANCE________________________________________________

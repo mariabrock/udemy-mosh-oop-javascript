@@ -2,7 +2,6 @@
 //                    Prototypical Inheritance
 // **************************************************************
 
-
 // function Circle(radius) {
 //   this.radius = radius;
 // }
@@ -48,6 +47,9 @@
 //now in the console, we see shape inherit's from shapeBase, and shapeBase inherits from objectBase,
 //next, we see circle inherits from circleBase, and circleBase inherits from shapeBase
 // here you have prototypical inheritance in action!
+
+
+
 
 // *************************************************************
 //                    Constructors/Super Constructors
@@ -112,9 +114,15 @@
 
 // this method of adding a parameter is known as 'calling the super constructor'
 
+
+
+
+
 // *************************************************************
 //               Intermediate Function Inheritance
 // **************************************************************
+
+// "reimplementing a method in a child object"
 
 // function Shape(color) {
 //   this.color = color;
@@ -162,6 +170,11 @@
 
 // the extend function ius what is called "intermediate function inheritance"
 
+
+
+
+
+
 // *************************************************************
 //               Method Overriding
 // **************************************************************
@@ -171,36 +184,171 @@ function extend(Child, Parent) {
   Child.prototype.constructor = Child;
 }
 
-function Shape() {
-  //a simple constructor
-}
+// function Shape() {
+//   //a simple constructor
+// }
 
-Shape.prototype.duplicate = function() {
-  console.log('duplicate');
-  // a function added to the object
-}
+// Shape.prototype.duplicate = function() {
+//   console.log('duplicate');
+//   // a function added to the object
+// }
 
-function Circle() {
+// function Circle() {
   // a constructor function
-}
+// }
 
-extend(Circle, Shape);
+// extend(Circle, Shape);
 // circle inherits from shape
 
-Circle.prototype.duplicate = function() {
-  Shape.prototype.duplicate.call();
+// Circle.prototype.duplicate = function() {
+//   Shape.prototype.duplicate.call();
 // maybe we want to call the orig implementation plus the modified version
 // to do this, we use the above to call it like a regular function
-  console.log('duplicate circle');
+  // console.log('duplicate circle');
   // place this after the extend so that it overrides the default, otherwise you won't see any of this
-}
+// }
 
-const c = new Circle();
+// const c = new Circle();
 // create a new Circle object
 
 // sometimes a defined implementation in a parent object isn't ideal in one specific child object
 // this can be changes through method overriding - overriding a method defined in the baseObject
 
 // *************************************************************
-//               Method Overriding
+//               Polymorphism
 // **************************************************************
+
+function Shape() {
+}
+
+Shape.prototype.duplicate = function() {
+  console.log('duplicate');
+}
+
+function Circle() {
+}
+
+extend(Circle, Shape);
+
+Circle.prototype.duplicate = function() {
+  console.log('duplicate circle');
+}
+
+// we start with the code from last lesson
+// poly means "many" morph means "form", so "many forms"
+
+//we define a new constructor and have it inherit from shape
+
+function Square() {
+}
+
+extend(Square, Shape);
+
+Square.prototype.duplicate = function() {
+  console.log('duplicate square');
+}
+
+// we now have a hierarchy, Shape at the top, and below it two children, Circle and Square
+// each od the children has a different implementation of the duplicate() method
+// ie: many implementations, or forms of the duplicate() method -- polymorphism
+
+// why is this powerful? let's define an array:
+
+const shapes = [
+  new Circle,
+  new Square
+]
+
+// now we can iterate over this array:
+for (let shape of shapes)
+shape.duplicate();
+// depending on the type of the shape object a different form of the duplicate method will be called
+// if Circle, circle.duplicate; if Square, square.duplicate, etc
+//before OOP, if we wanted to do this, you have to write endless for loops to check typee
+// like this:
+// for (let shape of shapes) {
+//   if(shape.type === 'circle')
+//     duplicateCircle();  <-------------- a separate standalone function
+//   else if (shape.type === 'square')
+//     duplicateSquare();  <-------------- a separate standalone function
+//   else
+//   duplicateShape();  <-------------- a separate standalone function
+// }
+//you'// have tons of standalone functions depending on how many shapes you needed to have
+// plus, your loop becomes an ever increasing check for types, and super inefficient
+// OOP and inheritance means that we can execute many forms of a method using a simpoe line of code! (like above)
+
+const c = new Circle();
+
+
+
+
+
+
+// ***********************************
+//               Mixins
+// ***********************************
+
+
+//define what a mixin function is
+// the three dots '...sources' are the rest operator in ES6
+function mixin(target, ...sources) {   
+  Object.assign(target, ...sources);
+  // by itself the the dots are known as a "spread operator" - we are 'spreading' an array into multiple objects
+}
+
+
+//let create some features
+
+const canEat = {
+  eat: function() {
+    this.hunger--;
+    console.log('eating');
+  }
+}
+
+const canWalk = {
+  walk: function() {
+    console.log('walking');
+  }
+}
+
+const canSwim = {
+  swim: function() {
+    console.log('swimming');
+  }
+}
+
+//ES6 gives us the Object.assign() method and it lets us copy properties/methods to other objects
+// Object.assign({}, canEat, canWalk);
+//each empty object we create will have each of these features
+
+function Person() {
+  //empty so we can assign new properties
+}
+
+// assign  these features to the Person prototype
+// Object.assign(Person.prototype, canEat, canWalk);
+// it's mixin:
+mixin(Person.prototype, canEat, canWalk);
+
+// now we create a new Person to see the properties
+const person = new Person();
+console.log(person);
+
+// but what about a Goldfish? we define canSwim() above
+//define a new constructor:
+function Goldfish() {
+}
+
+// use object.assign to give it props
+// Object.assign(Goldfish.prototype, canEat, canSwim);
+// its mixin:
+mixin(Goldfish.prototype, canEat, canSwim);
+
+//create a new goldfish object
+const goldfish = new Goldfish();
+console.log(goldfish);
+
+//this is effective: Object.assign(Goldfish.prototype, canEat, canSwim); but not every readable
+// we can create a function called "mixin" to clean this up and achieve more readable code

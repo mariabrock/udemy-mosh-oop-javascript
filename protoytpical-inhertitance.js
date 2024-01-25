@@ -179,10 +179,10 @@
 //               Method Overriding
 // **************************************************************
 
-function extend(Child, Parent) {
-  Child.prototype = Object.create(Parent.prototype);
-  Child.prototype.constructor = Child;
-}
+// function extend(Child, Parent) {
+//   Child.prototype = Object.create(Parent.prototype);
+//   Child.prototype.constructor = Child;
+// }
 
 // function Shape() {
 //   //a simple constructor
@@ -249,7 +249,7 @@ Square.prototype.duplicate = function() {
 }
 
 // we now have a hierarchy, Shape at the top, and below it two children, Circle and Square
-// each od the children has a different implementation of the duplicate() method
+// each of the children has a different implementation of the duplicate() method
 // ie: many implementations, or forms of the duplicate() method -- polymorphism
 
 // why is this powerful? let's define an array:
@@ -276,7 +276,7 @@ shape.duplicate();
 // }
 //you'// have tons of standalone functions depending on how many shapes you needed to have
 // plus, your loop becomes an ever increasing check for types, and super inefficient
-// OOP and inheritance means that we can execute many forms of a method using a simpoe line of code! (like above)
+// OOP and inheritance means that we can execute many forms of a method using a simple line of code! (like above)
 
 const c = new Circle();
 
@@ -329,7 +329,7 @@ function Person() {
 
 // assign  these features to the Person prototype
 // Object.assign(Person.prototype, canEat, canWalk);
-// it's mixin:
+// the mixin:
 mixin(Person.prototype, canEat, canWalk);
 
 // now we create a new Person to see the properties
